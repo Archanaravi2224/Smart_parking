@@ -1,0 +1,7 @@
+Git/
+.git/
+__pycache__/
+*.pyc
+*.log
+*.sqlite3
+* text eol=lf
