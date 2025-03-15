@@ -1,0 +1,65 @@
+/* Bill Container */
+.bill-container {
+    width: 350px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+/* Bill Header */
+.bill-header {
+    font-size: 22px;
+    font-weight: bold;
+    color: #d11f86;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+/* Bill Details */
+.bill-details {
+    text-align: left;
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 2px dashed #d11f86;
+}
+
+.bill-details p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Total Amount */
+.bill-total {
+    font-size: 20px;
+    font-weight: bold;
+    color: #b50b66;
+    padding-top: 10px;
+    border-top: 2px solid #d11f86;
+    margin-top: 10px;
+}
+
+/* Print Button */
+.print-btn {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    background: linear-gradient(135deg, #d11f86, #b50b66);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.print-btn:hover {
+    background: linear-gradient(135deg, #b50b66, #d11f86);
+    transform: scale(1.05);
+}

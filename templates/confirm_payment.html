@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .invoice-container {
+            width: 30%;
+            background: white;
+            padding: 20px;
+            margin-left: auto;  /* Pushes the container to the right */
+            margin-right: 100px; /* Adds some spacing from the right edge */
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .invoice-details {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        .invoice-details p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-secondary {
+            background-color: #007bff;
+        }
+        .btn-secondary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    
+</head>
+<body>
+
+    <div class="invoice-container">
+        <h2>Payment Confirmation</h2>
+        
+        <div class="invoice-details">
+            <p><strong>Name:</strong> {{ user_name }}</p>
+            <p><strong>Phone:</strong> {{ user_phone }}</p>
+            <p><strong>Slot id:</strong> {{ slot_id }}</p>
+            <p><strong>Parking Spot:</strong> {{ parking_name }}</p>
+            <p><strong>Current Date & Time:</strong> {{ current_datetime_display }}</p>
+            <p><strong>Start Time:</strong> {{ start_time }}</p>
+            <p><strong>End Time:</strong> {{ end_time }}</p>
+    
+            <p><strong>Duration:</strong> {{ duration }} hours</p>
+            <p><strong>Price per Hour:</strong> ₹{{ price_per_hour }}</p>
+            <p><strong>Total Price:</strong> ₹{{ total_price }}</p>
+            <p><strong>Payment Method:</strong> {{ payment_method }}</p>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn" onclick="window.print()">Print Invoice</button>
+            <a href="/" class="btn btn-secondary">Go to Dashboard</a>
+        </div>
+    </div>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='images/bill.jpg') }}");
+            background-size: cover;
+            
+            background-attachment: fixed;
+        }
+    </style>
+</body>
+</html>

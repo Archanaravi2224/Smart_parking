@@ -1,0 +1,37 @@
+{% extends "abase.html" %}
+{% block title %}Login Page{% endblock %}
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+       {% if messages %}
+            <ul>
+               {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+</head>
+
+<div class="login-container">
+    <h2>Admin Login Here</h2>
+    <form action ="#" method="POST">
+        <p>Name:</p>
+        <input type="text" name="username" required>
+        <p>Password:</p>
+        <input type="password" name="password" required>
+        <button type="submit">Login Here</button>
+    </form>
+</div>
+
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/im2.jpg') }}");
+        background-size: cover;
+        
+        background-attachment: fixed;
+    }
+</style>
+
+{% endblock %}

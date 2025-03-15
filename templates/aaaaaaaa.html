@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Parking Spot</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style1.css') }}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 500px;
+            margin-top: 50px;
+        }
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="sidebar">
+        <h1>Car Parking System</h1>
+        <div class="nav-links"></div>
+           <ul>
+              <li><a href="#">Dashboard</a></li>
+              <li><a href="/search_parking">Search Parking</a></li>
+              <li><a href="/payment_bill">View Bills</a></li>
+              <li><a href="#">Penalty Details</a></li>
+              <li><a href="#">Update Wallet</a></li>
+              <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>    
+    </div>
+
+    
+        
+    
+    <footer>
+        <p>Developed by Technovators</p>
+    </footer>
+
+</body>
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">Select a Parking Spot</h2>
+        <div class="card">
+            <form action="/confirm_booking" method="POST">
+                <label for="parkingSelect" class="form-label"><strong>Choose Parking:</strong></label>
+                <select id="parkingSelect" name="parking_id" class="form-select" required>
+                    {% for parking in nearest_parking %}
+                    <option value="{{ parking.id }}">
+                        {{ parking.name }} - ₹{{ parking.price }} per hour ({{ parking.distance|round(2) }} km away)
+                    </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary mt-3 w-100">Proceed to Booking</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+'''
+
+def get_distance(lat1, lng1, lat2, lng2):
+    # Dummy function for now (replace with Haversine formula if needed)
+    return ((lat1 - lat2) ** 2 + (lng1 - lng2) ** 2) ** 0.5  
+
+
+@app.route('/booking')
+def booking():
+    user_lat = float(request.args.get('lat', 0))
+    user_lng = float(request.args.get('lng', 0))
+
+    conn = sqlite3.connect('gps_data.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name, latitude, longitude, price FROM parking_areas")
+    parking_spots = cursor.fetchall()
+    conn.close()
+
+    parking_list = []
+    for spot in parking_spots:
+        distance = get_distance(user_lat, user_lng, spot[2], spot[3])
+        parking_list.append({
+            "id": spot[0],
+            "name": spot[1],
+            "lat": spot[2],
+            "lng": spot[3],
+            "price": spot[4],
+            "distance": distance
+        })
+
+    # Sort by distance & take 5 nearest spots
+    nearest_parking = sorted(parking_list, key=lambda x: x["distance"])[:5]
+
+    return render_template("booking.html", nearest_parking=nearest_parking)
+
+
+

@@ -1,0 +1,33 @@
+
+
+{% block title %}HOME PAGE{% endblock %}
+{% block content %}
+   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Parking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>Location Based Car Parking</h1>
+        <div class="nav-links">
+            <a href="/login">User Login</a>
+            <a href="/dlogin">Parking Agencies Login</a>
+            <a href="/admin">Admin Login</a>
+        </div>
+    </div>
+
+ 
+    
+</body>
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/im2.jpg') }}");
+        background-size: cover;
+        
+        background-attachment: fixed;
+    }
+</style>
+{% endblock %}
+

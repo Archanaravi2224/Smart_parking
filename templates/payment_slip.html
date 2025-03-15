@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 50px;
+            display: flex;
+            justify-content: flex-end; /* Aligns content to the right */
+            padding-right: 50px; /* Adds some spacing from the right edge */
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+            text-align: left;
+            width: 320px;
+            position: relative; /* Ensures elements inside can be positioned */
+        }
+        h2 {
+            color: #d11f86;
+        }
+        p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 10px;
+            width: 200px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #d11f86;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #c2186b;
+        }
+        .bill-container {
+            margin-top: 20px;
+        }
+        .back-button {
+            display: block;
+            width: fit-content;
+            margin: 20px auto 0; /* Centers the button at the bottom */
+        }
+        .back-button {
+            display: block;
+            width: fit-content;
+            margin: 20px auto 0; /* Places button at the bottom */
+            background-color: #d11f86;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #c2186b;
+        }
+
+    </style>
+    
+
+</head>
+<body>
+    <div class="container">
+        <h2>View Your Bill</h2>
+        
+        <div class="form-container">
+            <form action="/payment_slip" method="POST">
+                <label for="user_phone">Enter Phone Number:</label>
+                <input type="text" id="user_phone" name="user_phone" required>
+                <button type="submit">View Bill</button>
+            </form>
+        </div>
+
+        {% if bill %}
+            <div class="bill-container">
+                <h2>Parking Bill</h2>
+                <p><strong>Name:</strong> {{ bill[1] }}</p>
+                <p><strong>Phone:</strong> {{ bill[2] }}</p>
+                <p><strong>Parking ID:</strong> {{ bill[3] }}</p>
+                <p><strong>Slot ID:</strong> {{ bill[4] }}</p>
+                <p><strong>Parking Spot:</strong> {{ bill[5] }}</p>
+                <p><strong>Current Date & Time:</strong> {{ bill[6] }}</p>
+                <p><strong>Start Time:</strong> {{ bill[7] }}</p>
+                <p><strong>End Time:</strong> {{ bill[8] }}</p>
+                <p><strong>Price per Hour:</strong>  ₹{{ bill[9] }} hours</p>
+                <p><strong>Duration:</strong>{{ bill[10] }}</p>
+                <p><strong>Total Price:</strong> ₹{{ bill[11] }}</p>
+                <p><strong>Payment Method:</strong> {{ bill[12] }}</p>
+            </div>
+        {% elif request.method == 'POST' %}
+            <p style="color: red;">No bill found for this phone number.</p>
+        {% endif %}
+        <form action="/dashboard">
+            <button type="submit">Back</button>
+            
+        </form>
+    </div>
+    
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='images/bill.jpg') }}");
+            background-size: cover;
+            
+            background-attachment: fixed;
+        }
+    </style>
+</body>
+</html>
+

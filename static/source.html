@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Location Tracker</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Current Location</h1>
+    <button onclick="fetchGPSHistory()">Plot GPS History on Map</button>
+
+    <div id="map"></div>
+
+    <script>
+        // Initialize the map and set the default view (Coimbatore)
+        var map = L.map('map').setView([10.9986, 76.9679], 13);
+
+        // Load and display a tile layer on the map
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        let userMarker; // Initialize user marker
+
+        // Function to handle successful geolocation
+        function handleSuccess(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            // Update the map view to the user's location
+            map.setView([lat, lng], 13);
+
+            // Add a marker for the user's location
+            if (!userMarker) {
+                userMarker = L.marker([lat, lng]).addTo(map).bindPopup("You are here!").openPopup();
+            } else {
+                userMarker.setLatLng([lat, lng]); // Update marker position if it exists
+            }
+
+            // Optionally, send the GPS data to the backend
+            const timestamp = new Date().toISOString();
+            fetch('/gps/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ latitude: lat, longitude: lng, timestamp: timestamp })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                console.log("GPS data updated successfully");
+            })
+            .catch(error => console.error('Error sending GPS data:', error));
+        }
+
+        // Function to handle geolocation error
+        function handleError() {
+            alert("Unable to retrieve your location. Using fallback location.");
+            const fallbackLocation = { lat: 10.9986, lng: 76.9679 }; // Coimbatore coordinates
+            map.setView(fallbackLocation, 13);
+            if (!userMarker) {
+                userMarker = L.marker(fallbackLocation).addTo(map).bindPopup("Fallback Location").openPopup();
+            }
+        }
+
+        // Function to update GPS
+        function updateGPS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                });
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+            }
+        }
+
+        // Call updateGPS to get the current location
+        updateGPS();
+
+        // Call updateGPS every 5 seconds
+        setInterval(updateGPS, 5000);
+    </script>
+
+    <script src="static/gps.js"></script>
+</body>
+</html>

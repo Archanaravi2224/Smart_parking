@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Users</title>
+    
+</head>
+<body>
+<style>
+    /* General Styling */
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Heading */
+h2 {
+    font-size: 28px;
+    color: #0e0404;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+/* Table Styling */
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Table Headers */
+th {
+    background: #f33bb3cc;
+    color: white;
+    padding: 15px;
+    text-transform: uppercase;
+}
+
+/* Table Rows */
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+/* Hover Effects */
+tr:hover {
+    background: #f1f1f1;
+    transition: 0.3s;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+    }
+    th, td {
+        font-size: 14px;
+    }
+}
+
+</style>
+    <div class="container">
+        <h2>Users Details</h2>
+
+        {% if values %}
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+                {% for item in values %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.email }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_user', user_id=item.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <button type="submit" style="background-color: rgb(15, 6, 12); color: white; border: none; padding: 5px 10px;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <form action="/adashboard">
+                    <button type="submit">Back</button>
+                </form>
+            </table>
+        {% else %}
+            <p>No records found.</p>
+        {% endif %}
+
+        
+    </div>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='images/img4.jpg') }}");
+            background-size: cover;
+            
+            background-attachment: fixed;
+        }
+    </style>
+
+</body>
+</html>

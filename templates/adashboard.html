@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style1.css') }}">
+    
+</head>
+<body>
+   
+    <div class="sidebar">
+        <h1>Car Parking System</h1>
+        <div class="nav-links"></div>
+           <ul>
+              <li><a href="#">Dashboard</a></li>
+              <li><a href="/parking_areas">Parking Areas</a></li>
+              <li><a href="/view">Users Details</a></li>
+              <li><a href="/view_bills">View Payments </a></li>
+              <li><a href="/alogout">Logout</a></li>
+            </ul>
+        </div>    
+    </div>
+
+    <div class="content">
+        <h1>FACILE PARKING !!!</h1>
+    </div>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='images/img4.jpg') }}");
+            background-size: cover;
+            
+            background-attachment: fixed;
+        }
+    </style>
+        
+    
+    <footer>
+        <p>Developed by Technovators</p>
+    </footer>
+
+</body>
+</html>

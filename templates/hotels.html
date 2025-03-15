@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nearest Hotels on OpenStreetMap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        #map { height: 500px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map and set the default view (Coimbatore)
+        var map = L.map('map').setView([10.9986, 76.9679], 13);
+
+        // Load and display a tile layer on the map
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        let userMarker; // Initialize user marker
+
+        // Function to handle successful geolocation
+        function handleSuccess(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            // Update the map view to the user's location
+            map.setView([lat, lng], 13);
+
+            // Add a marker for the user's location
+            if (!userMarker) {
+                userMarker = L.marker([lat, lng]).addTo(map).bindPopup("You are here!").openPopup();
+            } else {
+                userMarker.setLatLng([lat, lng]); // Update marker position if it exists
+            }
+
+            showHotels(lat, lng);
+        }
+
+        // Function to handle geolocation error
+        function handleError() {
+            alert("Unable to retrieve your location. Using fallback location.");
+            const fallbackLocation = { lat: 10.9986, lng: 76.9679 }; // Coimbatore coordinates
+            map.setView(fallbackLocation, 13);
+            if (!userMarker) {
+                userMarker = L.marker(fallbackLocation).addTo(map).bindPopup("Fallback Location").openPopup();
+            }
+        }
+
+        // Function to update GPS
+        function updateGPS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                });
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+            }
+        }
+
+        // Call updateGPS to get the current location
+        updateGPS();
+
+        
+
+        // Function to fetch nearby hotels using Overpass API
+    async function fetchNearestHotels(lat, lon) {
+    const query = `
+        [out:json];
+        node(around:2000, ${lat}, ${lon})["tourism"="hotel"];
+        out body;
+    `;
+    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Limit results to 10 hotels
+    return data.elements.slice(0, 10);
+}
+
+
+
+// Function to update map with new location and show hotels
+function showHotels(lat, lon) {
+    // Center the map on the given coordinates
+    map.setView([lat, lon], 13);
+
+    // Fetch and display hotels
+    fetchNearestHotels(lat, lon).then(hotels => {
+        hotels.forEach(hotel => {
+            const marker = L.marker([hotel.lat, hotel.lon]).addTo(map);
+            marker.bindPopup(`<b>Hotel</b><br>Latitude: ${hotel.lat}<br>Longitude: ${hotel.lon}`);
+        });
+    });
+}
+
+
+    </script>
+
+    <script src="static/gps.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Areas in Coimbatore</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 600px; }
+    </style>
+</head>
+<body>
+    <h1>Parking Areas in Coimbatore</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+    <script>
+        const map = L.map('map').setView([11.0168, 76.9558], 13); // Center the map on Coimbatore
+
+        // Load OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Fetch parking areas from the backend
+        fetch('/api/parking')
+            .then(response => response.json())
+            .then(parkingAreas => {
+                parkingAreas.forEach(area => {
+                    const marker = L.marker([area[2], area[3]]) // Latitude and Longitude
+                        .addTo(map)
+                        .bindPopup(`<b>Id--${area[1]}</b><b>Name--${area[0]}</b><br>Address--${area[4]}<br></br>Price per hour -- ${area[5]}`); // Name and Description and price
+                });
+            })
+            .catch(error => console.error('Error fetching parking areas:', error));
+    </script>
+    
+</body>
+</html>

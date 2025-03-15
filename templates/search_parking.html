@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Parking</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style2.css') }}">
+</head>
+<body>
+    <h1>Search Parking</h1>
+
+
+    <div class="nav-links">
+        <ul>
+            <li><a href="/source">Your Location</a></li>
+            <li><a href="/parking">Parking Areas</a></li>
+            <li><a href="/hotels">Output</a></li>
+            <li><a href="/map_page">All parking live</a></li>
+        </ul>
+    </div>
+
+    <form action="/dis">
+        <button type="submit">Find Parking</button>
+        
+    </form>
+
+    <form action="/dashboard">
+        <button type="submit">Back</button>
+        
+    </form>
+ 
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/img4.jpg') }}");
+        background-size: cover;
+        
+        background-attachment: fixed;
+    }
+</style>
+</body>
+</html>
+       

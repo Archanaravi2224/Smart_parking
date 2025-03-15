@@ -1,0 +1,85 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Body Styling */
+body {
+    display: flex;
+    height: 100vh;
+    background-color: #f9f9f95c;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 250px;
+    background-color: #020202;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style-type: none;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #eb4688;
+    border-radius: 5px;
+}
+
+/* Content Area */
+.content {
+    flex-grow: 1;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+
+
+header {
+    background-color: #080808;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+   
+    width: 100%;
+}
+
+
+
+/* Footer Styling */
+footer {
+    background-color: #080808;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Login Page{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+           {% for msg in messages %}
+              <p>{{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<!--
+<form action="#" method="post">
+    <p>Name:</p>
+    <p><input type ="text" name ="nm" /></p>
+    <p><input type ="submit" value="submit" /></p>
+</form>
+-->
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+</head>
+
+<div class="login-container">
+    <h2>Public Login Here</h2>
+    <form action ="#" method="POST">
+        <p>Name:</p>
+        <input type="text" name="nm" required>
+        <p>Password:</p>
+        <input type="password" placeholder="Password" required>
+        <button type="submit">Login Here</button>
+    </form>
+</div>
+
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='images/im2.jpg') }}");
+        background-size: cover;
+        
+        background-attachment: fixed;
+    }
+</style>
+{% endblock %}

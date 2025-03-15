@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map with Custom Icons, Distance Table, and Routes</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+
+    <style>
+        #map { height: 100vh; width: 100%; position: relative; }
+        #distanceTable {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            width: 220px;
+            border-radius: 5px;
+            font-size: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            max-height: 140px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        #distanceTable th, #distanceTable td {
+            padding: 4px 6px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 11px;
+        }
+        #distanceTable thead { background-color: #f4f4f4; font-weight: bold; }
+
+        /* Styling for the booking button */
+        #bookingButton {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        #bookingButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="map">
+        <button id="bookingButton" onclick="goToBookingPage()">Go to Booking Page</button>
+        <table id="distanceTable">
+            <thead>
+                <tr>
+                    <th>Destination</th>
+                    <th>Distance (km)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        function goToBookingPage() {
+            window.location.href = '/booking'; // Update this URL to your actual booking page route
+        }
+
+        const map = L.map('map').fitWorld();
+
+        // Set OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const userIcon = L.icon({
+            iconUrl: 'https://pngimg.com/uploads/pin/pin_PNG52.png',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -25]
+        });
+
+        const parkingIcon = L.icon({
+            iconUrl: 'https://www.pngall.com/wp-content/uploads/14/Location-Pin-PNG-Pic.png',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -25]
+        });
+
+        function getDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) ** 2 +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+
+                L.marker([userLat, userLng], { icon: userIcon })
+                    .addTo(map)
+                    .bindPopup('<b>Your Location</b>')
+                    .openPopup();
+
+                map.setView([userLat, userLng], 15);
+
+                fetch('/api/map_page')
+                    .then(response => response.json())
+                    .then(parkingData => {
+                        const uniqueParking = {};
+                        parkingData.forEach(area => {
+                            if (!uniqueParking[area.name]) {
+                                uniqueParking[area.name] = area;
+                            }
+                        });
+
+                        const uniqueParkingArray = Object.values(uniqueParking);
+
+                        const parkingWithDistances = uniqueParkingArray.map(area => ({
+                            ...area,
+                            distance: getDistance(userLat, userLng, area.lat, area.lng)
+                        }));
+
+                        const closestParking = parkingWithDistances.sort((a, b) => a.distance - b.distance);
+                         
+                        // Display route to the closest parking spot initially
+                        const closestSpot = closestParking[0];
+                        displayRoute(userLat, userLng, closestSpot);
+
+                        const closestFive = closestParking.slice(0, 5);
+                
+
+                        console.log("Saving to LocalStorage:", closestFive);
+                        localStorage.setItem("nearestParking", JSON.stringify(closestFive));
+                        const tableBody = document.querySelector('#distanceTable tbody');
+                        tableBody.innerHTML = '';
+
+                        closestFive.forEach((area, index) => {
+                            const parkingMarker = L.marker([area.lat, area.lng], { icon: parkingIcon })
+                                .addTo(map)
+                                .bindPopup(`<b>${area.name}</b><br>Distance: ${area.distance.toFixed(2)} km`);
+
+                            if (index === 0) {
+                                parkingMarker.openPopup();
+                            }
+
+                            parkingMarker.on('click', () => {
+                                displayRoute(userLat, userLng, area);
+                            });
+
+                            const row = document.createElement('tr');
+                            const nameCell = document.createElement('td');
+                            nameCell.textContent = area.name;
+                            const distanceCell = document.createElement('td');
+                            distanceCell.textContent = area.distance.toFixed(2);
+                            row.appendChild(nameCell);
+                            row.appendChild(distanceCell);
+                            tableBody.appendChild(row);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching parking data:', error));
+            },
+            () => {
+                alert('Unable to retrieve your location. Please check your device settings.');
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+
+        function displayRoute(userLat, userLng, area) {
+            if (map.routingControl) {
+                map.removeControl(map.routingControl);
+            }
+
+            map.routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(userLat, userLng),
+                    L.latLng(area.lat, area.lng)
+                ],
+                routeWhileDragging: false,
+                createMarker: function(i, waypoint) {
+                    return L.marker(waypoint.latLng, {
+                        icon: i === 0 ? userIcon : parkingIcon
+                    }).bindPopup(i === 0 ? 'Your Location' : `Destination: ${area.name}`);
+                },
+                lineOptions: {
+                    styles: [{ color: 'blue', opacity: 0.6, weight: 4 }]
+                }
+            }).addTo(map);
+        }
+        
+  
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map with Custom Icons</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 100vh;  /* Full height */
+            width: 100%;     /* Full width */
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        // Initialize the map
+        const map = L.map('map').fitWorld();
+
+        // Set OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Custom blue icon for the user's location
+        const userIcon = L.icon({
+            iconUrl: 'https://pngimg.com/uploads/pin/pin_PNG52.png', // Blue location icon
+            iconSize: [40, 40], // Size of the icon
+            iconAnchor: [15, 40], // Anchor at the bottom center
+            popupAnchor: [0, -30] // Popup appears above the marker
+        });
+
+        // Custom black icon for parking areas
+        const parkingIcon = L.icon({
+            iconUrl: 'https://www.pngall.com/wp-content/uploads/14/Location-Pin-PNG-Pic.png', // Blue icon
+            iconSize: [40, 40],
+            iconAnchor: [15, 40],
+            popupAnchor: [0, -30]
+        });
+
+        // Get user's current location and place marker
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                // Add user location marker
+                L.marker([lat, lng], { icon: userIcon })
+                    .addTo(map)
+                    .bindPopup('<b>Your Location</b>')
+                    .openPopup();
+
+                // Center the map on user's location
+                map.setView([lat, lng], 15);
+            },
+            () => {
+                alert('Unable to retrieve your location. Please check your device settings.');
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+
+        // Fetch parking data and place markers
+        // Fetch parking data and place markers
+        fetch('/api/map_page')
+            .then(response => response.json())
+            .then(parkingData => {
+                parkingData.forEach(area => {
+                    L.marker([area.lat, area.lng], { icon: parkingIcon })
+                        .addTo(map)
+                        .bindPopup(`<b>${area.name}</b><br>Price: ₹${area.pri}`); // Fixed the template literal
+                });
+            })
+            .catch(error => console.error('Error fetching parking data:', error));
+
+            
+            
+
+    </script>
+</body>
+</html>
+
+

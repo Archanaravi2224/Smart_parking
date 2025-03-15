@@ -1,0 +1,58 @@
+/* General Styling */
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Heading */
+h2 {
+    font-size: 28px;
+    color: #333;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+/* Table Styling */
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Table Headers */
+th {
+    background: #c928ac;
+    color: white;
+    padding: 15px;
+    text-transform: uppercase;
+}
+
+/* Table Rows */
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+/* Hover Effects */
+tr:hover {
+    background: #f1f1f1;
+    transition: 0.3s;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+    }
+    th, td {
+        font-size: 14px;
+    }
+}

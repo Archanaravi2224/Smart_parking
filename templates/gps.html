@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Location Tracker</title>
+    <link 
+        rel="stylesheet" 
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-D3xYB8v02mTp3PKIF9aHyZeiEvc/oxHeE5iJBrS+ZoI=" 
+        crossorigin=""
+    />
+    <script 
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+        integrity="sha256-o9l+7sBC2j+jWpyiXkZTzRjJAXj3Si57/2ws6oBAX2I=" 
+        crossorigin=""
+    ></script>
+
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GPS Location Tracker</h1>
+    <button onclick="fetchGPSHistory()">Plot GPS History on Map</button>
+
+    <div id="map"></div>
+
+    <script src="/static/gps.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Slots</title>
+    <style>
+        .slot-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .slot-button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .available {
+            background-color: rgb(231, 157, 207);
+            color: white;
+        }
+        .booked {
+            background-color: rgb(100, 85, 85);
+            color: white;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Select a Slot</h2>
+
+    <div class="slot-container">
+        {% for slot in slots %}
+            <button class="slot-button {% if slot.status == 'booked' %}booked{% else %}available{% endif %}" 
+                data-slot-id="{{ slot.slot_id }}" 
+                data-parking-id="{{ parking_id }}"
+                onclick="bookSlot(this)"
+                {% if slot.status == 'booked' %}disabled{% endif %}>
+                Slot {{ slot.slot_id }} (P-ID: {{ parking_id }})
+            </button>
+        {% endfor %}
+    </div>
+
+    <script>
+        function bookSlot(button) {
+            let slotId = button.dataset.slotId;
+            let parkingId = button.dataset.parkingId;
+
+            console.log("Clicked Slot ID:", slotId);
+            console.log("Parking ID:", parkingId);
+
+            if (!slotId || !parkingId) {
+                alert("Slot ID or Parking ID is missing!");
+                return;
+            }
+
+            let confirmBooking = confirm(`Do you want to book Slot ${slotId}?`);
+            if (confirmBooking) {
+                window.location.href = `/book_slot/${parkingId}/${slotId}`;
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='images/book.jpg') }}");
+            background-size: cover;
+            
+            background-attachment: fixed;
+        }
+    </style>
+
+
+</body>
+</html>
