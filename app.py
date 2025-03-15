@@ -6,7 +6,7 @@ import sqlite3
 
 from sqlalchemy import column
 
-from second import second
+
 
 from flask_cors import CORS
 
