@@ -30,7 +30,7 @@ update_slot_status(slot_id, "booked")  # Example usage
 
 
 
-app.register_blueprint(second,url_prefix="/source")
+
 
 @app.route("/search_parking")
 def search_parking():
